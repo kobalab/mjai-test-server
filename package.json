@@ -1,0 +1,23 @@
+{
+  "name": "@kobalab/mjai-test-server",
+  "version": "0.0.1",
+  "description": "Mjaiボット対戦サーバー",
+  "bin": {
+    "mjai-test-server": "bin/server.js"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "麻雀",
+    "Mjai",
+    "電脳麻将"
+  ],
+  "author": "Satoshi Kobayashi",
+  "license": "MIT",
+  "type": "commonjs",
+  "dependencies": {
+    "@kobalab/majiang-core": "^1.4.1",
+    "yargs": "^17.7.3"
+  }
+}
