@@ -27,6 +27,7 @@ const argv = require('yargs')
     .option('output',   { alias: 'o', description: '出力ファイル(牌譜)' } )
     .option('skip',     { alias: 's', description: '指定した数の牌山をスキップ' } )
     .option('rule',     { alias: 'r', description: 'ルール' })
+    .option('verbose',  { alias: 'v', boolean: true })
     .demandCommand(2)
     .argv;
 
@@ -45,6 +46,7 @@ function start_game() {
         make_player(bots[id], (sock)=>{
             players[id] = new Player(sock);
             if (players.filter(s => s).length == 4) {
+                players[0]._debug = argv.verbose;
                 const game = new Game(players, end_game);
                 game.model.player = bots.concat();
                 game.speed = 0;
