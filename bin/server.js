@@ -26,6 +26,15 @@ function make_player(bot, callback) {
     });
 }
 
+function player_name(base, name) {
+    for (let id = 0; id < 4; id++) {
+        if (base[id]) base[id] += ` [${name[id]}]`;
+        else          base[id] = name[id];
+        base[id] = base[id].replace(/mjai\-/,'');
+    }
+    return base;
+}
+
 const argv = require('yargs')
     .usage('Usage: $0 mjai-bot mjai-bot')
     .option('times',    { alias: 't', description: '試行回数' } )
@@ -58,7 +67,7 @@ function start_game() {
                 players[0]._debug = argv.verbose;
                 const game = s ? new Game(players, end_game).script(s)
                                : new Majiang.Game(players, end_game);
-                game.model.player = bots.concat();
+                game.model.player = player_name(game.model.player, bots);
                 game.speed = 0;
                 game.kaiju();
             }
