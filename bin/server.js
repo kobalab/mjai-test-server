@@ -30,25 +30,41 @@ const argv = require('yargs')
     .demandCommand(2)
     .argv;
 
+let times = argv.times || 1;
+
 const bots = [ argv._[1], argv._[0], argv._[0], argv._[0] ];
-const players = [];
+let players = [];
+
+const logs = [];
+
+console.log(`[${times}]`, new Date().toLocaleTimeString());
+
+function start_game() {
+    players = [];
+    for (let id = 0; id < 4; id++) {
+        make_player(bots[id], (sock)=>{
+            players[id] = new Player(sock);
+            if (players.filter(s => s).length == 4) {
+                const game = new Game(players, end_game);
+                game.model.player = bots.concat();
+                game.speed = 0;
+                game.kaiju();
+            }
+        });
+    }
+}
 
 function end_game(paipu) {
-    if (argv.output) fs.writeFileSync(argv.output, JSON.stringify(paipu),
-                                            'utf-8');
+    for (let player of players) {
+        player._sock.destroy();
+    }
+    console.log(`[${--times}]`, new Date().toLocaleTimeString(),
+                paipu.rank[0], paipu.point[0]);
+    if (argv.output) {
+        logs.push(paipu);
+        fs.writeFileSync(argv.output, JSON.stringify(logs), 'utf-8');
+    }
+    if (times > 0) start_game();
 }
 
-for (let id = 0; id < 4; id++) {
-    make_player(bots[id], (sock)=>{
-        players[id] = new Player(sock);
-        if (players.filter(s => s).length == 4) {
-            const game = new Game(players, (paipu)=>{
-                end_game(paipu);
-                process.exit();
-            });
-            game.model.player = bots.concat();
-            game.speed = 0;
-            game.kaiju();
-        }
-    });
-}
+start_game();
