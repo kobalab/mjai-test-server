@@ -2,12 +2,18 @@
 
 "use strict";
 
-const fs  = require('fs');
-const net = require('net');
+const fs   = require('fs');
+const net  = require('net');
+const zlib = require('zlib');
 const { execFile } = require('child_process');
 
 const Game   = require('../lib/game');
 const Player = require('../lib/player');
+
+function get_shan(filename) {
+    if (! filename) return;
+    return JSON.parse(zlib.gunzipSync(fs.readFileSync(filename)).toString());
+}
 
 function make_player(bot, callback) {
     const server = net.createServer((sock)=>{
@@ -31,6 +37,8 @@ const argv = require('yargs')
     .demandCommand(2)
     .argv;
 
+const script = get_shan(argv.input) || [];
+
 let times = argv.times || 1;
 
 const bots = [ argv._[1], argv._[0], argv._[0], argv._[0] ];
@@ -42,12 +50,14 @@ console.log(`[${times}]`, new Date().toLocaleTimeString());
 
 function start_game() {
     players = [];
+    let s = script.shift();
     for (let id = 0; id < 4; id++) {
         make_player(bots[id], (sock)=>{
             players[id] = new Player(sock);
             if (players.filter(s => s).length == 4) {
                 players[0]._debug = argv.verbose;
-                const game = new Game(players, end_game);
+                const game = s ? new Game(players, end_game).script(s)
+                               : new Majiang.Game(players, end_game);
                 game.model.player = bots.concat();
                 game.speed = 0;
                 game.kaiju();
