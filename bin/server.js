@@ -56,7 +56,9 @@ const argv = require('yargs')
     .argv;
 
 const script = get_shan(argv.input) || [];
-const rule   = get_rule(argv.rule);
+for (let i = 0; i < (argv.skip || 0); i++) script.shift()
+
+const rule = get_rule(argv.rule);
 
 let times = argv.times || 1;
 
