@@ -76,7 +76,7 @@ function start_game() {
         make_player(bots[id], (sock)=>{
             players[id] = new Player(sock);
             if (players.filter(s => s).length == 4) {
-                players[0]._debug = argv.verbose;
+                players[0].debug = argv.verbose;
                 const game = s ? new Game(players, end_game, rule).script(s)
                                : new Majiang.Game(players, end_game, rule);
                 game.model.player = player_name(game.model.player, bots);
