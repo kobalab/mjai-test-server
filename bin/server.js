@@ -60,7 +60,7 @@ for (let i = 0; i < (argv.skip || 0); i++) script.shift()
 
 const rule = get_rule(argv.rule);
 
-let times = argv.times || 1;
+let times = argv.times || script && script.length || 1;
 
 const bots = [ argv._[1], argv._[0], argv._[0], argv._[0] ];
 let players = [];
