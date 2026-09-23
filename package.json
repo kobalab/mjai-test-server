@@ -1,12 +1,15 @@
 {
   "name": "@kobalab/mjai-test-server",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Mjaiボット対戦サーバー",
+  "publishConfig": {
+    "access": "public"
+  },
   "bin": {
     "mjai-test-server": "bin/server.js"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node bin/server.js"
   },
   "keywords": [
     "麻雀",
