@@ -80,6 +80,7 @@ function start_game() {
                 const game = s ? new Game(players, end_game, rule).script(s)
                                : new Majiang.Game(players, end_game, rule);
                 game.model.player = player_name(game.model.player, bots);
+                game.model.title += ` #${logs.length + (argv.skip || 0)}`;
                 game.speed = 0;
                 game.kaiju();
             }
