@@ -2,6 +2,9 @@
   "name": "@kobalab/mjai-test-server",
   "version": "0.1.0",
   "description": "Mjaiボット対戦サーバー",
+  "publishConfig": {
+    "access": "public"
+  },
   "bin": {
     "mjai-test-server": "bin/server.js"
   },
