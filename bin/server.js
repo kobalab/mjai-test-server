@@ -2,6 +2,8 @@
 
 "use strict";
 
+const Majiang = require('@kobalab/majiang-core');
+
 const fs   = require('fs');
 const net  = require('net');
 const zlib = require('zlib');
