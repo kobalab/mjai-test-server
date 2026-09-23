@@ -17,6 +17,13 @@ function get_shan(filename) {
     return JSON.parse(zlib.gunzipSync(fs.readFileSync(filename)).toString());
 }
 
+function get_rule(filename = '{}') {
+    if (filename.match(/\{.*\}/)) {
+        return Majiang.rule(JSON.parse(filename));
+    }
+    return Majiang.rule(JSON.parse(fs.readFileSync(filename)));
+}
+
 function make_player(bot, callback) {
     const server = net.createServer((sock)=>{
         server.close();
@@ -49,6 +56,7 @@ const argv = require('yargs')
     .argv;
 
 const script = get_shan(argv.input) || [];
+const rule   = get_rule(argv.rule);
 
 let times = argv.times || 1;
 
@@ -67,8 +75,8 @@ function start_game() {
             players[id] = new Player(sock);
             if (players.filter(s => s).length == 4) {
                 players[0]._debug = argv.verbose;
-                const game = s ? new Game(players, end_game).script(s)
-                               : new Majiang.Game(players, end_game);
+                const game = s ? new Game(players, end_game, rule).script(s)
+                               : new Majiang.Game(players, end_game, rule);
                 game.model.player = player_name(game.model.player, bots);
                 game.speed = 0;
                 game.kaiju();
