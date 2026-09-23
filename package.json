@@ -1,6 +1,6 @@
 {
   "name": "@kobalab/mjai-test-server",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "Mjaiボット対戦サーバー",
   "bin": {
     "mjai-test-server": "bin/server.js"
