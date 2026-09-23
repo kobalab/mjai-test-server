@@ -35,3 +35,9 @@ JSONファイルもしくはJSON形式の文字列で [ルール](https://github
 
 #### --verbose, -v
 Mjaiプロトコルの通信を表示します。
+
+## ライセンス
+[MIT](https://github.com/kobalab/mjai-test-server/blob/master/LICENSE)
+
+## 作者
+[Satoshi Kobayashi](https://github.com/kobalab)
