@@ -24,12 +24,16 @@ function get_rule(filename = '{}') {
     return Majiang.rule(JSON.parse(fs.readFileSync(filename)));
 }
 
-function make_player(bot, callback) {
+function make_player(bot, callback, noexec) {
     const server = net.createServer((sock)=>{
         server.close();
         callback(sock);
     }).listen(()=>{
         const port = server.address().port;
+        if (noexec) {
+            console.error(bot,`mjsonp://127.0.0.1:${port}/default`);
+            return;
+        }
         execFile(bot, [`mjsonp://127.0.0.1:${port}/default`])
             .on('error', (err)=>{ throw err });
     });
@@ -52,6 +56,7 @@ const argv = require('yargs')
     .option('skip',     { alias: 's', description: '指定した数の牌山をスキップ' } )
     .option('rule',     { alias: 'r', description: 'ルール' })
     .option('verbose',  { alias: 'v', boolean: true })
+    .option('noexec',   { alias: 'X', boolean: true })
     .demandCommand(2)
     .argv;
 
@@ -84,7 +89,7 @@ function start_game() {
                 game.speed = 0;
                 game.kaiju();
             }
-        });
+        }, argv.noexec && id == 0);
     }
 }
 
