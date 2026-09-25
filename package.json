@@ -1,6 +1,6 @@
 {
   "name": "@kobalab/mjai-test-server",
-  "version": "0.1.1",
+  "version": "0.2.0",
   "description": "Mjaiボット対戦サーバー",
   "publishConfig": {
     "access": "public"
@@ -11,6 +11,10 @@
   "scripts": {
     "start": "node bin/server.js"
   },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kobalab/mjai-test-server.git"
+  },
   "keywords": [
     "麻雀",
     "Mjai",
@@ -19,8 +23,14 @@
   "author": "Satoshi Kobayashi",
   "license": "MIT",
   "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/kobalab/mjai-test-server/issues"
+  },
+  "homepage": "https://github.com/kobalab/mjai-test-server#readme",
   "dependencies": {
+    "@kobalab/majiang-ai": "^1.3.0",
     "@kobalab/majiang-core": "^1.4.1",
+    "@kobalab/mjai-bot": "^1.2.0",
     "yargs": "^17.7.3"
   }
 }
