@@ -29,6 +29,7 @@
   "homepage": "https://github.com/kobalab/mjai-test-server#readme",
   "dependencies": {
     "@kobalab/majiang-core": "^1.4.1",
+    "@kobalab/mjai-bot": "^1.2.0",
     "yargs": "^17.7.3"
   }
 }
