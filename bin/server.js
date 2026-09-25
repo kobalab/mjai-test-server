@@ -9,7 +9,7 @@ const net  = require('net');
 const zlib = require('zlib');
 const { execFile } = require('child_process');
 
-const Game   = require('../lib/game');
+const Game   = require('@kobalab/majiang-ai/preset-game');
 const Player = require('../lib/player');
 
 function get_shan(filename) {
@@ -60,12 +60,12 @@ const argv = require('yargs')
     .demandCommand(2)
     .argv;
 
-const script = get_shan(argv.input) || [];
-for (let i = 0; i < (argv.skip || 0); i++) script.shift()
+const shan = get_shan(argv.input) || [];
+for (let i = 0; i < (argv.skip || 0); i++) shan.shift()
 
 const rule = get_rule(argv.rule);
 
-let times = argv.times || script && script.length || 1;
+let times = argv.times || shan.length || 1;
 
 const bots = [ argv._[1], argv._[0], argv._[0], argv._[0] ];
 let players = [];
@@ -76,14 +76,13 @@ console.log(`[${times}]`, new Date().toLocaleTimeString());
 
 function start_game() {
     players = [];
-    let s = script.shift();
     for (let id = 0; id < 4; id++) {
         make_player(bots[id], (sock)=>{
             players[id] = new Player(sock);
             if (players.filter(s => s).length == 4) {
                 players[0].debug = argv.verbose;
-                const game = s ? new Game(players, end_game, rule).script(s)
-                               : new Majiang.Game(players, end_game, rule);
+                const game = new Game(players, end_game, rule)
+                                                    .preset(shan.shift());
                 game.model.player = player_name(game.model.player, bots);
                 game.model.title += ` #${logs.length + (argv.skip || 0)}`;
                 game.speed = 0;
