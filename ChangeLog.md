@@ -1,3 +1,7 @@
+### v0.3.1 / 2026-09-27
+
+  - MaxListenersExceededWarning に対処
+
 ## v0.3.0 / 2026-09-27
 
   - possible_actions を設定するよう修正
