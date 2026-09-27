@@ -1,3 +1,10 @@
+## v0.3.0 / 2026-09-27
+
+  - possible_actions を設定するよう修正
+    - @kobalab/mjai-bot 1.2.0 → 1.3.0
+  - ボット側が切断しときに以降をツモ切りにするよう修正
+  - type: "reach" の通知に possible_actions を設定する処理を追加
+
 ### v0.2.1 / 2026-09-25
 
   - type: "end_game" の応答待ってしまうバグを修正
