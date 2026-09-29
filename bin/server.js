@@ -35,7 +35,10 @@ function make_player(bot, callback, noexec) {
             return;
         }
         execFile(bot, [`mjsonp://127.0.0.1:${port}/default`])
-            .on('error', (err)=>{ throw err });
+            .on('error', (err)=>{ throw err })
+            .on('close', (code, sig)=>{
+                if (code || sig) console.error(`exit ${bot}:`, code || sig);
+            });
     });
 }
 
