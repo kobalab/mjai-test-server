@@ -81,7 +81,7 @@ function start_game() {
     players = [];
     for (let id = 0; id < 4; id++) {
         make_player(bots[id], (sock)=>{
-            players[id] = new Player(sock);
+            players[id] = new Player(sock, id, bots[id]);
             if (players.filter(s => s).length == 4) {
                 players[0].debug = argv.verbose;
                 const game = new Game(players, end_game, rule)
