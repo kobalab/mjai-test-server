@@ -24,18 +24,25 @@ function get_rule(filename = '{}') {
     return Majiang.rule(JSON.parse(fs.readFileSync(filename)));
 }
 
-function make_player(bot, callback, noexec) {
+function make_player(id, callback, noexec) {
     const server = net.createServer((sock)=>{
         server.close();
         callback(sock);
     }).listen(()=>{
         const port = server.address().port;
         if (noexec) {
-            console.error(bot,`mjsonp://127.0.0.1:${port}/default`);
+            console.error(bots[id],`mjsonp://127.0.0.1:${port}/default`);
             return;
         }
-        execFile(bot, [`mjsonp://127.0.0.1:${port}/default`])
-            .on('error', (err)=>{ throw err });
+        execFile(bots[id], [`mjsonp://127.0.0.1:${port}/default`])
+            .on('error', (err)=>{
+                console.error(`${bots[id]}[${id}]:`, err.toString());
+                process.exit(-1);
+            })
+            .on('close', (code, sig)=>{
+                if (code || sig)
+                    console.error(`exit ${bots[id]}[${id}]:`, code || sig);
+            });
     });
 }
 
@@ -77,7 +84,7 @@ console.log(`[${times}]`, new Date().toLocaleTimeString());
 function start_game() {
     players = [];
     for (let id = 0; id < 4; id++) {
-        make_player(bots[id], (sock)=>{
+        make_player(id, (sock)=>{
             players[id] = new Player(sock);
             if (players.filter(s => s).length == 4) {
                 players[0].debug = argv.verbose;
@@ -93,9 +100,7 @@ function start_game() {
 }
 
 function end_game(paipu) {
-    for (let player of players) {
-        player._sock.destroy();
-    }
+    for (let player of players) player._sock.end();
     console.log(`[${--times}]`, new Date().toLocaleTimeString(),
                 paipu.rank[0], paipu.point[0]);
     if (argv.output) {

@@ -18,7 +18,7 @@ $ npm i -g @kobalab/mjai-test-server
 **bjai-bot1** で指定した3体のボットと **mjai-bot2** で指定したボットと対戦させます。
 
 #### --input, -i
-デュプリケート対局用の牌山を指定します。省略した場合はランダムな牌山で自動対局します。
+[デュプリケート対局用の牌山](https://github.com/kobalab/majiang-ai/tree/master/dev#デュプリケート対局用牌山生成) を指定します。省略した場合はランダムな牌山で自動対局します。
 
 #### --output, -o
 指定されたファイルに牌譜を出力します。
