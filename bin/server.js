@@ -96,9 +96,7 @@ function start_game() {
 }
 
 function end_game(paipu) {
-    for (let player of players) {
-        player._sock.destroy();
-    }
+    for (let player of players) player._sock.end();
     console.log(`[${--times}]`, new Date().toLocaleTimeString(),
                 paipu.rank[0], paipu.point[0]);
     if (argv.output) {
