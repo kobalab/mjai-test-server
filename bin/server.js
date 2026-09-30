@@ -24,20 +24,21 @@ function get_rule(filename = '{}') {
     return Majiang.rule(JSON.parse(fs.readFileSync(filename)));
 }
 
-function make_player(bot, callback, noexec) {
+function make_player(id, callback, noexec) {
     const server = net.createServer((sock)=>{
         server.close();
         callback(sock);
     }).listen(()=>{
         const port = server.address().port;
         if (noexec) {
-            console.error(bot,`mjsonp://127.0.0.1:${port}/default`);
+            console.error(bots[id],`mjsonp://127.0.0.1:${port}/default`);
             return;
         }
-        execFile(bot, [`mjsonp://127.0.0.1:${port}/default`])
+        execFile(bots[id], [`mjsonp://127.0.0.1:${port}/default`])
             .on('error', (err)=>{ throw err })
             .on('close', (code, sig)=>{
-                if (code || sig) console.error(`exit ${bot}:`, code || sig);
+                if (code || sig)
+                    console.error(`exit ${bots[id]}[${id}]:`, code || sig);
             });
     });
 }
@@ -80,8 +81,8 @@ console.log(`[${times}]`, new Date().toLocaleTimeString());
 function start_game() {
     players = [];
     for (let id = 0; id < 4; id++) {
-        make_player(bots[id], (sock)=>{
-            players[id] = new Player(sock, id, bots[id]);
+        make_player(id, (sock)=>{
+            players[id] = new Player(sock);
             if (players.filter(s => s).length == 4) {
                 players[0].debug = argv.verbose;
                 const game = new Game(players, end_game, rule)
