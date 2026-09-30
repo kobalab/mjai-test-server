@@ -35,7 +35,10 @@ function make_player(id, callback, noexec) {
             return;
         }
         execFile(bots[id], [`mjsonp://127.0.0.1:${port}/default`])
-            .on('error', (err)=>{ throw err })
+            .on('error', (err)=>{
+                console.error(`${bots[id]}[${id}]:`, err.toString());
+                process.exit(-1);
+            })
             .on('close', (code, sig)=>{
                 if (code || sig)
                     console.error(`exit ${bots[id]}[${id}]:`, code || sig);
