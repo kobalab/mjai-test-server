@@ -12,11 +12,6 @@ const { execFile } = require('child_process');
 const Game   = require('@kobalab/majiang-ai/preset-game');
 const Player = require('../lib/player');
 
-function get_shan(filename) {
-    if (! filename) return;
-    return JSON.parse(zlib.gunzipSync(fs.readFileSync(filename)).toString());
-}
-
 function get_rule(filename = '{}') {
     if (filename.match(/\{.*\}/)) {
         return Majiang.rule(JSON.parse(filename));
@@ -24,90 +19,81 @@ function get_rule(filename = '{}') {
     return Majiang.rule(JSON.parse(fs.readFileSync(filename)));
 }
 
-function make_player(id, callback, noexec) {
-    const server = net.createServer((sock)=>{
-        server.close();
-        callback(sock);
-    }).listen(()=>{
-        const port = server.address().port;
-        if (noexec) {
-            console.error(bots[id],`mjsonp://127.0.0.1:${port}/default`);
-            return;
-        }
-        execFile(bots[id], [`mjsonp://127.0.0.1:${port}/default`])
-            .on('error', (err)=>{
-                console.error(`${bots[id]}[${id}]:`, err.toString());
-                process.exit(-1);
-            })
-            .on('close', (code, sig)=>{
-                if (code || sig)
-                    console.error(`exit ${bots[id]}[${id}]:`, code || sig);
-            });
-    });
-}
-
-function player_name(base, name) {
-    for (let id = 0; id < 4; id++) {
-        if (base[id]) base[id] += ` [${name[id]}]`;
-        else          base[id] = name[id];
-        base[id] = base[id].replace(/mjai\-/,'');
+function select_bots(bots) {
+    let rv = [],
+        all_bots = bots.concat();
+    while (all_bots.length) {
+        rv.push(all_bots.splice(Math.random()*all_bots.length, 1)[0]);
+        if (rv.length == 4) break;
     }
-    return base;
+    return rv;
 }
 
 const argv = require('yargs')
     .usage('Usage: $0 mjai-bot mjai-bot')
-    .option('times',    { alias: 't', description: '試行回数' } )
-    .option('input',    { alias: 'i', description: '入力ファイル(牌山)' } )
-    .option('output',   { alias: 'o', description: '出力ファイル(牌譜)' } )
-    .option('skip',     { alias: 's', description: '指定した数の牌山をスキップ' } )
-    .option('rule',     { alias: 'r', description: 'ルール' })
-    .option('verbose',  { alias: 'v', boolean: true })
-    .option('noexec',   { alias: 'X', boolean: true })
-    .demandCommand(2)
+    .option('server', { alias: 's', default: '127.0.0.1' } )
+    .option('port',   { alias: 'p', default: 11600       } )
+    .option('times',  { alias: 't'                       } )
+    .option('output', { alias: 'o'                       } )
+    .option('rule',   { alias: 'r'                       } )
     .argv;
-
-const shan = get_shan(argv.input) || [];
-for (let i = 0; i < (argv.skip || 0); i++) shan.shift()
 
 const rule = get_rule(argv.rule);
 
-let times = argv.times || shan.length || 1;
-
-const bots = [ argv._[1], argv._[0], argv._[0], argv._[0] ];
-let players = [];
+let times = argv._.length < 4 ? argv.times : (argv.times || 1);
 
 const logs = [];
 
-console.log(`[${times}]`, new Date().toLocaleTimeString());
+function listen() {
 
-function start_game() {
-    players = [];
-    for (let id = 0; id < 4; id++) {
-        make_player(id, (sock)=>{
-            players[id] = new Player(sock);
-            if (players.filter(s => s).length == 4) {
-                players[0].debug = argv.verbose;
-                const game = new Game(players, end_game, rule)
-                                                    .preset(shan.shift());
-                game.model.player = player_name(game.model.player, bots);
-                game.model.title += ` #${logs.length + (argv.skip || 0)}`;
-                game.speed = 0;
-                game.kaiju();
-            }
-        }, argv.noexec && id == 0);
-    }
+    const players = [];
+
+    const server = net.createServer((sock)=>{
+        players.push(new Player(sock));
+        if (players.length == 4) {
+            server.close();
+            if (argv._.length < 4) console.log('Start game...');
+            start_game(players);
+            return;
+        }
+        if (argv._.length < 4)
+            console.log(`Waiting for ${4 - players.length} more players...`);
+    }).listen(argv.port, argv.server, ()=>{
+        if (argv._.length < 4)
+            console.log(`Waiting for ${4 - players.length} more players...`);
+        for (let bot of select_bots(argv._)) {
+            execFile(bot, [`mjsonp://${argv.server}:${argv.port}/default`])
+                .on('error', (e)=>{ console.error(e.toString()) });
+        }
+    }).on('error', (e)=>{
+        console.error(e.toString());
+        process.exit(-1);
+    });
 }
 
-function end_game(paipu) {
-    for (let player of players) player._sock.end();
-    console.log(`[${--times}]`, new Date().toLocaleTimeString(),
-                paipu.rank[0], paipu.point[0]);
+function start_game(players) {
+    if (times != null) process.stdout.write(`[${--times}] `);
+    const game = new Game(players, paipu=> end_game(players, paipu), rule);
+    game.model.title += ` #${logs.length}`;
+    game.speed = 0;
+    game.kaiju();
+}
+
+function end_game(players, paipu) {
+    paipu.player = players.map(p => p.name || '(NOP)');
+    let result = [];
+    for (let id = 0; id < 4; id++) {
+        result[paipu.rank[id]- 1]
+            = paipu.player[id]
+            + (paipu.point[id] > 0 ? ` (+${paipu.point[id]})`
+                                   : ` (${paipu.point[id]})`);
+    }
+    process.stdout.write(result.join(' / ') + '\n');
     if (argv.output) {
         logs.push(paipu);
         fs.writeFileSync(argv.output, JSON.stringify(logs), 'utf-8');
     }
-    if (times > 0) start_game();
+    if (times == null || times > 0) listen();
 }
 
-start_game();
+listen();

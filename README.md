@@ -36,6 +36,30 @@ JSONファイルもしくはJSON形式の文字列で [ルール](https://github
 #### --verbose, -v
 Mjaiプロトコルの通信を表示します。
 
+### mjai-server [ *options...* ] [ *mjai-bots....* ]
+
+**mjai-bots** で指定したMjai同士で対戦します。
+**mjai-bots** が4体を超える場合はランダムに4体を選択し、4体に満たない場合は他の対局者の接続を待ちます。
+
+#### --server, -s
+対局者を待つサーバーアドレスを指定します。
+省略した場合は `127.0.0.1` を使用します。
+
+#### --port, -p
+対局者を待つポート番号を指定します。
+省略した場合は `11600` を使用します。
+
+#### --output, -o
+指定されたファイルに牌譜を出力します。
+
+#### --times, -t
+対局数を指定します。
+省略した場合 **mjai-bots** が4体に満たないときは永遠に対局を繰り返し、そうでない場合は1回だけ対局します。
+
+#### --rule, -r
+JSONファイルもしくはJSON形式の文字列で [ルール](https://github.com/kobalab/majiang-core/wiki/ルール) を変更します。
+**--input** で牌山を指定した場合、赤牌の枚数は牌山にしたがいます。
+
 ## ライセンス
 [MIT](https://github.com/kobalab/mjai-test-server/blob/master/LICENSE)
 
