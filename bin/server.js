@@ -80,7 +80,7 @@ function start_game(players) {
 }
 
 function end_game(players, paipu) {
-    paipu.player = players.map(p => p.name);
+    paipu.player = players.map(p => p.name || '(NOP)');
     let result = [];
     for (let id = 0; id < 4; id++) {
         result[paipu.rank[id]- 1]
