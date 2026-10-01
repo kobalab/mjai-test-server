@@ -31,7 +31,7 @@ function select_bots(bots) {
 
 const argv = require('yargs')
     .usage('Usage: $0 mjai-bot mjai-bot')
-    .option('server', { alias: 's', default: '127.0.0.1' } )
+    .option('host',   { alias: 'h', default: '127.0.0.1' } )
     .option('port',   { alias: 'p', default: 11600       } )
     .option('times',  { alias: 't'                       } )
     .option('output', { alias: 'o'                       } )
@@ -43,6 +43,8 @@ const rule = get_rule(argv.rule);
 let times = argv._.length < 4 ? argv.times : (argv.times || 1);
 
 const logs = [];
+
+console.log(`Server listening at mjsonp://${argv.host}:${argv.port}/default`);
 
 function listen() {
 
