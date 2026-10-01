@@ -6,7 +6,8 @@
     "access": "public"
   },
   "bin": {
-    "mjai-test-server": "bin/server.js"
+    "mjai-test-server": "bin/test-server.js",
+    "mjai-server": "bin/server.js"
   },
   "scripts": {
     "start": "node bin/server.js"
