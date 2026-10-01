@@ -58,7 +58,6 @@ Mjaiプロトコルの通信を表示します。
 
 #### --rule, -r
 JSONファイルもしくはJSON形式の文字列で [ルール](https://github.com/kobalab/majiang-core/wiki/ルール) を変更します。
-**--input** で牌山を指定した場合、赤牌の枚数は牌山にしたがいます。
 
 ## ライセンス
 [MIT](https://github.com/kobalab/mjai-test-server/blob/master/LICENSE)
