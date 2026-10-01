@@ -30,7 +30,7 @@ function select_bots(bots) {
 }
 
 const argv = require('yargs')
-    .usage('Usage: $0 mjai-bot mjai-bot')
+    .usage('Usage: $0 [ mjai-bots... ]')
     .option('host',   { alias: 'h', default: '127.0.0.1' } )
     .option('port',   { alias: 'p', default: 11600       } )
     .option('times',  { alias: 't'                       } )
