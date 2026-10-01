@@ -30,7 +30,7 @@ function select_bots(bots) {
 }
 
 const argv = require('yargs')
-    .usage('Usage: $0 mjai-bot mjai-bot')
+    .usage('Usage: $0 [ mjai-bots... ]')
     .option('host',   { alias: 'h', default: '127.0.0.1' } )
     .option('port',   { alias: 'p', default: 11600       } )
     .option('times',  { alias: 't'                       } )
@@ -64,7 +64,7 @@ function listen() {
         if (argv._.length < 4)
             console.log(`Waiting for ${4 - players.length} more players...`);
         for (let bot of select_bots(argv._)) {
-            execFile(bot, [`mjsonp://${argv.server}:${argv.port}/default`])
+            execFile(bot, [`mjsonp://${argv.host}:${argv.port}/default`])
                 .on('error', (e)=>{ console.error(e.toString()) });
         }
     }).on('error', (e)=>{
