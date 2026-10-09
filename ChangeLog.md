@@ -1,3 +1,7 @@
+## v1.1.0 / 2026-10-09
+
+  - @kobalab/mjai-bot → @kobalab/mjai-converter
+
 ### v1.0.4 / 2026-10-04
 
   - mortal-wrapper が大明槓後に無応答になるバグを修正
